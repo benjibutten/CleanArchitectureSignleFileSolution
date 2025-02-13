@@ -3,7 +3,9 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//Nödvändiga beroenden för API delen, Controllers, OpenApi/Scalar
 builder.Services.AddControllers();
+builder.Services.AddOpenApi();
 
 // Registrera beroenden (Application & Infrastructure) 
 // Kan ske i extention methods som ligger i respektive projekt
@@ -14,8 +16,6 @@ builder.Services.AddSingleton<IProductRepository, InMemoryProductRepository>();
 //Registrera Application beroenden
 builder.Services.AddTransient<IProductService, ProductService>();
 
-// Registrera OpenApi för Scalar support
-builder.Services.AddOpenApi();
 
 
 var app = builder.Build();
@@ -46,7 +46,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<Product>> Get()
+    public ActionResult<IEnumerable<Product>> Get() //Product ligger i Domänlagret så det är okej, men problemet här är att det är samma som databasen använder, egentligen vill man ha DTOs eller "Contracts" så man kan välja vad man vill exponera utåt
     {
         return Ok(_service.GetAllProducts());
     }
